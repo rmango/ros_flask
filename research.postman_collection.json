@@ -1,0 +1,69 @@
+{
+	"info": {
+		"_postman_id": "3f413280-a37e-4da3-8b6f-35e3abde7595",
+		"name": "research",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "img_test",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://192.168.0.35:5000/img",
+					"protocol": "http",
+					"host": [
+						"192",
+						"168",
+						"0",
+						"35"
+					],
+					"port": "5000",
+					"path": [
+						"img"
+					]
+				},
+				"description": "test test"
+			},
+			"response": []
+		},
+		{
+			"name": "coords_test",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "x",
+							"value": "100",
+							"type": "text"
+						},
+						{
+							"key": "y",
+							"value": "200",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://192.168.0.35:5000/coords",
+					"protocol": "http",
+					"host": [
+						"192",
+						"168",
+						"0",
+						"35"
+					],
+					"port": "5000",
+					"path": [
+						"coords"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

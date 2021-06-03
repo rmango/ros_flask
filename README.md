@@ -2,8 +2,12 @@
 to run: `roslaunch ros_flask start_server.launch`
 also run the start message ros python file, in this repo: https://github.com/rmango/ROS-arm-cam
 
-------------
+To test out messages, use [Postman](https://www.postman.com/)  
+example postman requests are in the file research.postman_collection.json
 
+
+** old docs start here **
+------------
 # About
 
 Simple Flask - ROS prototype.

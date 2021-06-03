@@ -2,9 +2,9 @@
 import os
 import rospy
 import threading
-from sensor_msgs.msg import Image
+from sensor_msgs.msg import Image, CompressedImage # https://docs.ros.org/en/melodic/api/sensor_msgs/html/msg/Image.html
 
-from flask import Flask, render_template, redirect
+from flask import Flask, render_template, redirect, request
 from std_msgs.msg import String
 
 #import html
@@ -40,13 +40,13 @@ def send_start_message(msg):
 
 def update_plate_img(received_img):
     print("updating img")
-    print(received_img)
-    plate_img = received_img
+    print(received_img.data)
+    plate_img = "data:image/jpg;base64," + received_img
 
 # subscribe to the start topic
 rospy.Subscriber('start_capture', String, send_start_message)
 # http://wiki.ros.org/rospy_tutorials/Tutorials/WritingImagePublisherSubscriber
-rospy.Subscriber('/camera/color/image_raw', Image, update_plate_img)
+rospy.Subscriber('/camera/color/image_raw/compressed', CompressedImage, update_plate_img)
 
 
 @app.route('/')
@@ -60,9 +60,11 @@ def send_img():
 
 # get the image coordinates
 @app.route('/coords', methods=['POST'])
-def get_coords(coords):
-    print(coords)
-    return plate_img
+def get_coords():
+    print("x" + request.form['x'])
+    print("y" + request.form['y'])
+
+    return 'successfully received coordinates'
 
 
 # @app.route('/info')
