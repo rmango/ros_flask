@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import os
+import time
 import rospy
 import threading
 from sensor_msgs.msg import Image, CompressedImage # https://docs.ros.org/en/melodic/api/sensor_msgs/html/msg/Image.html
@@ -29,7 +30,7 @@ pubStop = rospy.Publisher('/requestStop01', String, queue_size=1)
 
 # TODO maybe send as file instead of text
 test_file = open("/home/synaptech/catkin_ws/src/ros_flask/src/testImg.txt", "r")
-plate_img = test_file.read()
+# plate_img = test_file.read()
 start_msg_received = False # TODO only send the img if start message has been received
 
 def send_start_message(msg):
@@ -41,8 +42,11 @@ def send_start_message(msg):
 
 def update_plate_img(received_img):
     print("updating img")
-    print(received_img.data)
-    plate_img = "data:image/jpg;base64," + received_img
+    # print(received_img.data)
+    global plate_img
+    # plate_img = "data:image/jpg;base64," + str(received_img)
+    plate_img = str(received_img)
+
 
 # subscribe to the start topic
 rospy.Subscriber('start_capture', String, send_start_message)
@@ -57,7 +61,10 @@ def default():
 # send the image
 @app.route('/img', methods=['GET'])
 def send_img():
+    print("got image request")
     print(request.data)
+    while (plate_img == ""):
+        time.sleep(1)
 
     # https://www.kite.com/python/answers/how-to-set-response-headers-using-flask-in-python
     response = flask.Response()
@@ -74,6 +81,7 @@ def get_coords():
     # https://www.kite.com/python/answers/how-to-set-response-headers-using-flask-in-python
     response = flask.Response()
     response.headers["Access-Control-Allow-Origin"] = "*"
+    response.data = "successfully received coordinates"
     return response
     # return 'successfully received coordinates'
 
