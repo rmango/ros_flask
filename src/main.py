@@ -4,7 +4,8 @@ import rospy
 import threading
 from sensor_msgs.msg import Image, CompressedImage # https://docs.ros.org/en/melodic/api/sensor_msgs/html/msg/Image.html
 
-from flask import Flask, render_template, redirect, request
+import flask
+from flask import Flask, render_template, redirect, request, Response
 from std_msgs.msg import String
 
 #import html
@@ -56,7 +57,13 @@ def default():
 # send the image
 @app.route('/img', methods=['GET'])
 def send_img():
-    return plate_img
+    print(request.data)
+
+    # https://www.kite.com/python/answers/how-to-set-response-headers-using-flask-in-python
+    response = flask.Response()
+    response.headers["Access-Control-Allow-Origin"] = "*"
+    response.data = plate_img
+    return response
 
 # get the image coordinates
 @app.route('/coords', methods=['POST'])
@@ -64,7 +71,11 @@ def get_coords():
     print("x" + request.form['x'])
     print("y" + request.form['y'])
 
-    return 'successfully received coordinates'
+    # https://www.kite.com/python/answers/how-to-set-response-headers-using-flask-in-python
+    response = flask.Response()
+    response.headers["Access-Control-Allow-Origin"] = "*"
+    return response
+    # return 'successfully received coordinates'
 
 
 # @app.route('/info')
