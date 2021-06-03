@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 import os
 import time
+import cv2
+import numpy as np
 import rospy
 import threading
 from sensor_msgs.msg import Image, CompressedImage # https://docs.ros.org/en/melodic/api/sensor_msgs/html/msg/Image.html
@@ -43,16 +45,18 @@ def send_start_message(msg):
 def update_plate_img(received_img):
     print("updating img")
     # print(received_img.data)
+    # np_arr = np.fromstring(received_img.data, np.uint8)
+    # image_np = cv2.imdecode(np_arr, cv2.CV_LOAD_IMAGE_COLOR)
     global plate_img
-    plate_img = "data:image/jpg;base64," + str(received_img.data)
-    # plate_img = str(received_img.data)
+    plate_img = "data:image/jpg;base64," + str(received_img)
+    # plate_img = received_img.data
 
 
 # subscribe to the start topic
 rospy.Subscriber('start_capture', String, send_start_message)
 # http://wiki.ros.org/rospy_tutorials/Tutorials/WritingImagePublisherSubscriber
 rospy.Subscriber('/camera/color/image_raw/compressed', CompressedImage, update_plate_img)
-
+imgCoordPub = rospy.Publisher('/img_coords', String)
 
 @app.route('/')
 def default():
@@ -75,8 +79,13 @@ def send_img():
 # get the image coordinates
 @app.route('/coords', methods=['POST'])
 def get_coords():
-    print("x" + request.form['x'])
-    print("y" + request.form['y'])
+    x = request.form['x']
+    y = request.form['y']
+    print("x" + x)
+    print("y" + y)
+
+    # publish coordinates to image coordinate topic
+    imgCoordPub.publish("x " + x + " y: " + y)
 
     # https://www.kite.com/python/answers/how-to-set-response-headers-using-flask-in-python
     response = flask.Response()

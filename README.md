@@ -4,6 +4,8 @@ remember to `pip install Flask`
 to run: `roslaunch ros_flask start_server.launch`
 also run the start message ros python file, in this repo: https://github.com/rmango/ROS-arm-cam
 
+for camera topic: `rosrun image_transport republish raw in:=/camera/color/image_raw compressed out:=/camera/color/image_raw`  
+
 To test out messages, use [Postman](https://www.postman.com/)  
 example postman requests are in the file research.postman_collection.json
 
