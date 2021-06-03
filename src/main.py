@@ -26,8 +26,6 @@ app = Flask(__name__)
 # in the main thread.
 
 threading.Thread(target=lambda: rospy.init_node('test_node', disable_signals=True)).start()
-pubMotion = rospy.Publisher('/requestMotion01', String, queue_size=1)
-pubStop = rospy.Publisher('/requestStop01', String, queue_size=1)
 # NGROK = rospy.get_param('/ngrok', None)
 
 start_msg_received = False # TODO only send the img if start message has been received
