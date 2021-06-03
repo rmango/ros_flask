@@ -1,4 +1,5 @@
 ## UPDATED DOCS
+This is a ros package, so needs to go inside of the src of a catkin workspace
 remember to `pip install Flask`
 
 to run: `roslaunch ros_flask start_server.launch`
@@ -6,9 +7,11 @@ also run the start message ros python file, in this repo: https://github.com/rma
 
 for camera topic: `rosrun image_transport republish raw in:=/camera/color/image_raw compressed out:=/camera/color/image_raw`  
 
+# Testing
 To test out messages, use [Postman](https://www.postman.com/)  
 example postman requests are in the file research.postman_collection.json
 
+Helpful command to watch the /img_coord topic: `rostopic echo /img_coords`
 
 ** old docs start here **
 ------------
