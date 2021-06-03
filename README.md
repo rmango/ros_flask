@@ -1,3 +1,9 @@
+## UPDATED DOCS
+to run: `roslaunch ros_flask start_server.launch`
+also run the start message ros python file, in this repo: https://github.com/rmango/ROS-arm-cam
+
+------------
+
 # About
 
 Simple Flask - ROS prototype.
