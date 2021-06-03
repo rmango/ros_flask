@@ -44,8 +44,8 @@ def update_plate_img(received_img):
     print("updating img")
     # print(received_img.data)
     global plate_img
-    # plate_img = "data:image/jpg;base64," + str(received_img)
-    plate_img = str(received_img)
+    plate_img = "data:image/jpg;base64," + str(received_img.data)
+    # plate_img = str(received_img.data)
 
 
 # subscribe to the start topic
