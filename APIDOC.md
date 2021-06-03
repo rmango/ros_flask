@@ -21,21 +21,22 @@ data:image/jpg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCg
 **Error Handling:**
 - TODO
 
-## Get the camera image
-**Request Format:** /img
+## Update the selected image coordinates
+**Request Format:** /coords
 
 **Request Type:**  POST
 
-**Returned Data Format**: Plain Text in the format of a jpg. Can set the src of an HTML img element to this text directly. 
+**Returned Data Format**: Plain text
 
-**Description:** Returns the plate image. [not yet implemented: dependent on start message letting you know if camera is in correct position]
+**Description:** Receives the image coordinates from the UI, then sends them off as a ROS message to the robot. 
+For the POST request, coordinates are sent in request body as key value pairs
 
-**Example Request:** /img
+**Example Request:** /coords
 
 **Example Response:**
 
 ```
-data:image/jpg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhs ...
+coordinates updated successfuly
 ```
 
 **Error Handling:**
