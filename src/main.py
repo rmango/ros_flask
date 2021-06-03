@@ -2,6 +2,7 @@
 import os
 import rospy
 import threading
+from sensor_msgs.msg import Image
 
 from flask import Flask, render_template, redirect
 from std_msgs.msg import String
@@ -34,14 +35,18 @@ def send_start_message(msg):
     # r = requests.post('http://ada-feeding.ngrok.io', params={'q': 'raspberry pi request'})
     print('send start message')
     print(msg)
+    start_msg_received = True
+    # TODO finish implementing start message logic
 
-    # TODO when we receive the start message, update the plate img
-
-
-    return plate_img
+def update_plate_img(received_img):
+    print("updating img")
+    print(received_img)
+    plate_img = received_img
 
 # subscribe to the start topic
-startSub = rospy.Subscriber('start_capture', String, send_start_message)
+rospy.Subscriber('start_capture', String, send_start_message)
+# http://wiki.ros.org/rospy_tutorials/Tutorials/WritingImagePublisherSubscriber
+rospy.Subscriber('/camera/color/image_raw', Image, update_plate_img)
 
 
 @app.route('/')
