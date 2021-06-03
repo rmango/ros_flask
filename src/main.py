@@ -10,6 +10,7 @@ from sensor_msgs.msg import Image, CompressedImage # https://docs.ros.org/en/mel
 import flask
 from flask import Flask, render_template, redirect, request, Response
 from std_msgs.msg import String
+from ros_flask.msg import img_coords
 
 #import html
 # import requests
@@ -52,7 +53,7 @@ def update_plate_img(received_img):
 rospy.Subscriber('start_capture', String, send_start_message)
 # http://wiki.ros.org/rospy_tutorials/Tutorials/WritingImagePublisherSubscriber
 rospy.Subscriber('/camera/color/image_raw/compressed', CompressedImage, update_plate_img)
-imgCoordPub = rospy.Publisher('/img_coords', String)
+imgCoordPub = rospy.Publisher('/img_coords', img_coords)
 
 @app.route('/')
 def default():
@@ -80,13 +81,15 @@ def get_coords():
     y = request.form['y']
     width = request.form['width']
     height = request.form['height']
-    print("x" + x)
-    print("y" + y)
-    print("width" + width)
-    print("y" + height)
+    # print("x" + x)
+    # print("y" + y)
+    # print("width" + width)
+    # print("y" + height)
+
+    msg = img_coords(int(x), int(y), int(width), int(height))
 
     # publish coordinates to image coordinate topic
-    imgCoordPub.publish("x " + x + " y: " + y)
+    imgCoordPub.publish(msg)
 
     # https://www.kite.com/python/answers/how-to-set-response-headers-using-flask-in-python
     response = flask.Response()
