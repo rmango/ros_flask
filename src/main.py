@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 import os
 import rospy
 import threading
@@ -6,7 +6,7 @@ import threading
 from flask import Flask, render_template, redirect
 from std_msgs.msg import String
 
-import html
+#import html
 
 app = Flask(__name__)
 
@@ -23,12 +23,12 @@ pubStop = rospy.Publisher('/requestStop01', String, queue_size=1)
 
 @app.route('/')
 def default():
-    return redirect('/info')
+    return "hi"
 
 
-@app.route('/info')
-def info():
-    return html.info()
+# @app.route('/info')
+# def info():
+#     return html.info()
 
 
 @app.route('/send_movement_command/<direction>', methods = ['GET'])

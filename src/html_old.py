@@ -33,3 +33,5 @@ def success(message='No obvious errors'):
        </body>
     </html>
     '''.format(message)
+def escape():
+   return ''
