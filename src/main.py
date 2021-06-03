@@ -31,7 +31,7 @@ pubStop = rospy.Publisher('/requestStop01', String, queue_size=1)
 # NGROK = rospy.get_param('/ngrok', None)
 
 # TODO maybe send as file instead of text
-test_file = open("/home/synaptech/catkin_ws/src/ros_flask/src/testImg.txt", "r")
+# test_file = open("/home/synaptech/catkin_ws/src/ros_flask/src/testImg.txt", "r")
 # plate_img = test_file.read()
 start_msg_received = False # TODO only send the img if start message has been received
 
