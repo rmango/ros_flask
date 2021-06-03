@@ -7,6 +7,11 @@ also run the start message ros python file, in this repo: https://github.com/rma
 
 for camera topic: `rosrun image_transport republish raw in:=/camera/color/image_raw compressed out:=/camera/color/image_raw`  
 
+## Running with a rosbag
+In a new terminal, cd into the directory that contains your rosbag\
+run ```$ source /opt/ros/noetic/setup.bash```\
+run ```$ rosbag play <rosbag_name>.bag```
+
 # Testing
 To test out messages, use [Postman](https://www.postman.com/)  
 example postman requests are in the file research.postman_collection.json
