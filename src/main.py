@@ -30,10 +30,8 @@ pubMotion = rospy.Publisher('/requestMotion01', String, queue_size=1)
 pubStop = rospy.Publisher('/requestStop01', String, queue_size=1)
 # NGROK = rospy.get_param('/ngrok', None)
 
-# TODO maybe send as file instead of text
-test_file = open("/home/synaptech/catkin_ws/src/ros_flask/src/testImg.txt", "r")
-# plate_img = test_file.read()
 start_msg_received = False # TODO only send the img if start message has been received
+plate_img = ""
 
 def send_start_message(msg):
     # r = requests.post('http://ada-feeding.ngrok.io', params={'q': 'raspberry pi request'})
@@ -68,6 +66,7 @@ def send_img():
     print("got image request")
     print(request.data)
     while (plate_img == ""):
+        print("Couldn't find plate_img, retrying")
         time.sleep(1)
 
     # https://www.kite.com/python/answers/how-to-set-response-headers-using-flask-in-python
@@ -81,8 +80,12 @@ def send_img():
 def get_coords():
     x = request.form['x']
     y = request.form['y']
+    width = request.form['width']
+    height = request.form['height']
     print("x" + x)
     print("y" + y)
+    print("width" + width)
+    print("y" + height)
 
     # publish coordinates to image coordinate topic
     imgCoordPub.publish("x " + x + " y: " + y)
@@ -90,7 +93,7 @@ def get_coords():
     # https://www.kite.com/python/answers/how-to-set-response-headers-using-flask-in-python
     response = flask.Response()
     response.headers["Access-Control-Allow-Origin"] = "*"
-    response.data = "successfully received coordinates"
+    response.data = "successfully received coordinates x: " + x + " and y: " + y + " width: " + width + " height: " + height
     return response
     # return 'successfully received coordinates'
 
