@@ -12,6 +12,10 @@ from flask import Flask, render_template, redirect, request, Response
 from std_msgs.msg import String
 from ros_flask.msg import img_coords
 
+# https://blog.miguelgrinberg.com/post/access-localhost-from-your-phone-or-from-anywhere-in-the-world
+# https://pyngrok.readthedocs.io/en/latest/index.html
+from flask_ngrok import run_with_ngrok
+
 #import html
 # import requests
 
@@ -20,6 +24,7 @@ from ros_flask.msg import img_coords
 # https://flask.palletsprojects.com/en/2.0.x/quickstart/
 
 app = Flask(__name__)
+run_with_ngrok(app, "plate-api")
 
 # ROS node, publisher, and parameter.
 # The node is started in a separate thread to avoid conflicts with Flask.

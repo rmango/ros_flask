@@ -1,8 +1,11 @@
 ## UPDATED DOCS
-
+# Dependencies
 This is a ros package, so needs to go inside of the src of a catkin workspace
-remember to `pip install Flask`
 
+remember to `pip install Flask`
+install locally this python library: https://github.com/rmango/flask-ngrok
+
+# Run app
 to run: `roslaunch ros_flask start_server.launch`
 also run the start message ros python file, in this repo: https://github.com/rmango/ROS-arm-cam
 
