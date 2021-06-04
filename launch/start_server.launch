@@ -1,3 +1,5 @@
 <launch>
   <node name='flask_ros_server' type='main.py' pkg='ros_flask' output='screen'/>
+  <!-- republish node is for camera topic-->
+  <node name="republish" type="republish" pkg="image_transport" args="raw in:=/camera/color/image_raw compressed out:=/camera/color/image_raw" />
 </launch>

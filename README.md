@@ -4,12 +4,11 @@ This is a ros package, so needs to go inside of the src of a catkin workspace
 
 remember to `pip install Flask`
 install locally this python library: https://github.com/rmango/flask-ngrok
+To install locally, run this inside of the flask-ngrok folder: `pip install -e .`
 
 # Run app
 to run: `roslaunch ros_flask start_server.launch`
 also run the start message ros python file, in this repo: https://github.com/rmango/ROS-arm-cam
-
-for camera topic: `rosrun image_transport republish raw in:=/camera/color/image_raw compressed out:=/camera/color/image_raw`  
 
 ## Running with a rosbag
 In a new terminal, cd into the directory that contains your rosbag\
