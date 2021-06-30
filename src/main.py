@@ -59,6 +59,7 @@ rospy.Subscriber('start_capture', String, send_start_message)
 # http://wiki.ros.org/rospy_tutorials/Tutorials/WritingImagePublisherSubscriber
 rospy.Subscriber('/camera/color/image_raw/compressed', CompressedImage, update_plate_img)
 imgCoordPub = rospy.Publisher('/img_coords', img_coords)
+estopPub= rospy.Publisher("/emergency_stop", String)
 
 @app.route('/')
 def default():
@@ -101,8 +102,22 @@ def get_coords():
     response.headers["Access-Control-Allow-Origin"] = "*"
     response.data = "successfully received coordinates x: " + x + " and y: " + y + " width: " + width + " height: " + height
     return response
-    # return 'successfully received coordinates'
 
+
+
+# Recieve emergency stop from UI, send via ROS.
+@app.route('/estop', methods=['POST'])
+def send_emergency_stop():
+    msg = ""
+
+    # publish emergency stop signal
+    estopPub.publish(msg)
+
+    # https://www.kite.com/python/answers/how-to-set-response-headers-using-flask-in-python
+    response = flask.Response()
+    response.headers["Access-Control-Allow-Origin"] = "*"
+    response.data = "successfully received emergency stop signal"
+    return response
 
 # @app.route('/info')
 # def info():
