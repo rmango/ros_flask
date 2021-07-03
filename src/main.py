@@ -72,7 +72,7 @@ def send_img():
     print(request.data)
     while (plate_img == ""):
         print("Couldn't find plate_img, retrying")
-        time.sleep(1)
+        time.sleep(0.1)
 
     # https://www.kite.com/python/answers/how-to-set-response-headers-using-flask-in-python
     response = flask.Response()
