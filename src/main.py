@@ -11,6 +11,7 @@ import flask
 from flask import Flask, render_template, redirect, request, Response
 from std_msgs.msg import String
 from ros_flask.msg import img_coords
+from ros_flask.msg import acquisition_transfer
 
 # https://blog.miguelgrinberg.com/post/access-localhost-from-your-phone-or-from-anywhere-in-the-world
 # https://pyngrok.readthedocs.io/en/latest/index.html
@@ -36,6 +37,8 @@ threading.Thread(target=lambda: rospy.init_node('test_node', disable_signals=Tru
 
 start_msg_received = False # TODO only send the img if start message has been received
 plate_img = ""
+acquisition_method = 'vertical_skewer'
+transfer_method = 'horizontal'
 
 def send_start_message(msg):
     # r = requests.post('http://ada-feeding.ngrok.io', params={'q': 'raspberry pi request'})
@@ -59,7 +62,8 @@ rospy.Subscriber('start_capture', String, send_start_message)
 # http://wiki.ros.org/rospy_tutorials/Tutorials/WritingImagePublisherSubscriber
 rospy.Subscriber('/camera/color/image_raw/compressed', CompressedImage, update_plate_img)
 imgCoordPub = rospy.Publisher('/img_coords', img_coords)
-estopPub= rospy.Publisher("/emergency_stop", String)
+estopPub = rospy.Publisher("/emergency_stop", String)
+acquisition_transfer_pub = rospy.Publisher('/acquisition_transfer', acquisition_transfer)
 
 @app.route('/')
 def default():
@@ -106,6 +110,26 @@ def get_coords():
 
 
 # Recieve emergency stop from UI, send via ROS.
+@app.route('/acquisition', methods=['POST'])
+def update_acquisition():
+    global acquisition_method
+    acquisition_method = request.form['acquisition']
+    publish_acquisition_transfer()
+    response = flask.Response()
+    response.headers["Access-Control-Allow-Origin"] = "*"
+    response.data = "updated acquisition to " + acquisition_method
+    return response
+
+@app.route('/transfer', methods=['POST'])
+def update_transfer():
+    global transfer_method
+    transfer_method = request.form['transfer']
+    publish_acquisition_transfer()
+    response = flask.Response()
+    response.headers["Access-Control-Allow-Origin"] = "*"
+    response.data = "updated acquisition to " + transfer_method
+    return response
+
 @app.route('/estop', methods=['POST'])
 def send_emergency_stop():
     msg = ""
@@ -118,6 +142,12 @@ def send_emergency_stop():
     response.headers["Access-Control-Allow-Origin"] = "*"
     response.data = "successfully received emergency stop signal"
     return response
+
+
+def publish_acquisition_transfer():
+    global acquisition_method, transfer_method
+    msg = acquisition_transfer(acquisition_method, transfer_method)
+    acquisition_transfer_pub.publish(msg)
 
 # @app.route('/info')
 # def info():
@@ -137,6 +167,7 @@ def send_emergency_stop():
 #     else:
 #         mgs = 'Direction not recognized'
 #         return html.failure(msg)
+
 
 
 if __name__ == '__main__':

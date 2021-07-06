@@ -51,6 +51,7 @@ find_package(catkin REQUIRED COMPONENTS
  add_message_files(
    FILES
    img_coords.msg
+   acquisition_transfer.msg
 )
 
 ## Generate services in the 'srv' folder
