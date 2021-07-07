@@ -109,7 +109,7 @@ def get_coords():
 
 
 
-# Recieve emergency stop from UI, send via ROS.
+# Recieve acquisition method from UI, send via ROS.
 @app.route('/acquisition', methods=['POST'])
 def update_acquisition():
     global acquisition_method
@@ -120,6 +120,7 @@ def update_acquisition():
     response.data = "updated acquisition to " + acquisition_method
     return response
 
+# Recieve transfer method from UI, send via ROS.
 @app.route('/transfer', methods=['POST'])
 def update_transfer():
     global transfer_method
@@ -130,6 +131,7 @@ def update_transfer():
     response.data = "updated acquisition to " + transfer_method
     return response
 
+# Recieve emergency stop signal from UI, send via ROS.
 @app.route('/estop', methods=['POST'])
 def send_emergency_stop():
     msg = ""
@@ -143,7 +145,7 @@ def send_emergency_stop():
     response.data = "successfully received emergency stop signal"
     return response
 
-
+# Bundles acquisition and transfer method together and sends them in a single ROS message.
 def publish_acquisition_transfer():
     global acquisition_method, transfer_method
     msg = acquisition_transfer(acquisition_method, transfer_method)

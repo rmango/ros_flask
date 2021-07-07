@@ -1,0 +1,2 @@
+string acquisition
+string transfer
