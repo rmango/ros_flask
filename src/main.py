@@ -134,7 +134,7 @@ def update_transfer():
 # Recieve emergency stop signal from UI, send via ROS.
 @app.route('/estop', methods=['POST'])
 def send_emergency_stop():
-    msg = ""
+    msg = "estop"
 
     # publish emergency stop signal
     estopPub.publish(msg)
@@ -144,6 +144,21 @@ def send_emergency_stop():
     response.headers["Access-Control-Allow-Origin"] = "*"
     response.data = "successfully received emergency stop signal"
     return response
+
+
+# Recieve emergency stop signal from UI, send via ROS.
+@app.route('/reset', methods=['POST'])
+def send_reset():
+    msg = "reset"
+
+    # publish emergency stop signal
+    estopPub.publish(msg)
+
+    # https://www.kite.com/python/answers/how-to-set-response-headers-using-flask-in-python
+    response = flask.Response()
+    response.headers["Access-Control-Allow-Origin"] = "*"
+    response.data = "successfully received reset signal"
+    return response    
 
 # Bundles acquisition and transfer method together and sends them in a single ROS message.
 def publish_acquisition_transfer():
