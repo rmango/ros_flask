@@ -25,20 +25,21 @@ from flask_ngrok import run_with_ngrok
 # https://flask.palletsprojects.com/en/2.0.x/quickstart/
 
 app = Flask(__name__)
-run_with_ngrok(app, "plate-api")
+# run_with_ngrok(app, "plate-api")
 
 # ROS node, publisher, and parameter.
 # The node is started in a separate thread to avoid conflicts with Flask.
 # The parameter *disable_signals* must be set if node is not initialized
 # in the main thread.
 
-threading.Thread(target=lambda: rospy.init_node('test_node', disable_signals=True)).start()
+threading.Thread(target=lambda: rospy.init_node('flask_node', disable_signals=True)).start()
 # NGROK = rospy.get_param('/ngrok', None)
 
 start_msg_received = False # TODO only send the img if start message has been received
 plate_img = ""
 acquisition_method = 'vertical_skewer'
 transfer_method = 'horizontal'
+transfer_id = 0
 
 def send_start_message(msg):
     # r = requests.post('http://ada-feeding.ngrok.io', params={'q': 'raspberry pi request'})
@@ -73,7 +74,6 @@ def default():
 @app.route('/img', methods=['GET'])
 def send_img():
     print("got image request")
-    print(request.data)
     while (plate_img == ""):
         print("Couldn't find plate_img, retrying")
         time.sleep(0.1)
@@ -146,6 +146,18 @@ def send_emergency_stop():
     return response
 
 
+
+# Recieve transfer method from UI, send via ROS.
+@app.route('/transfer_id', methods=['POST'])
+def update_transfer_id():
+    global transfer_id
+    transfer_id = int(request.form['transfer_id'])
+    publish_acquisition_transfer()
+    response = flask.Response()
+    response.headers["Access-Control-Allow-Origin"] = "*"
+    response.data = "updated transfer id to " + str(transfer_id)
+    return response
+
 # Recieve emergency stop signal from UI, send via ROS.
 @app.route('/reset', methods=['POST'])
 def send_reset():
@@ -162,8 +174,8 @@ def send_reset():
 
 # Bundles acquisition and transfer method together and sends them in a single ROS message.
 def publish_acquisition_transfer():
-    global acquisition_method, transfer_method
-    msg = acquisition_transfer(acquisition_method, transfer_method)
+    global acquisition_method, transfer_method, transfer_id
+    msg = acquisition_transfer(acquisition_method, transfer_method, transfer_id)
     acquisition_transfer_pub.publish(msg)
 
 # @app.route('/info')
