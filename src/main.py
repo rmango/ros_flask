@@ -11,7 +11,7 @@ import flask
 from flask import Flask, render_template, redirect, request, Response
 from std_msgs.msg import String
 from ros_flask.msg import img_coords
-from ros_flask.msg import acquisition_transfer
+from ros_flask.msg import user_pref
 
 # https://blog.miguelgrinberg.com/post/access-localhost-from-your-phone-or-from-anywhere-in-the-world
 # https://pyngrok.readthedocs.io/en/latest/index.html
@@ -40,6 +40,7 @@ plate_img = ""
 acquisition_method = 'vertical_skewer'
 transfer_method = 'horizontal'
 transfer_id = 0
+speed = "slow"
 
 def send_start_message(msg):
     # r = requests.post('http://ada-feeding.ngrok.io', params={'q': 'raspberry pi request'})
@@ -64,7 +65,7 @@ rospy.Subscriber('start_capture', String, send_start_message)
 rospy.Subscriber('/camera/color/image_raw/compressed', CompressedImage, update_plate_img)
 imgCoordPub = rospy.Publisher('/img_coords', img_coords)
 estopPub = rospy.Publisher("/emergency_stop", String)
-acquisition_transfer_pub = rospy.Publisher('/acquisition_transfer', acquisition_transfer)
+user_pref_pub = rospy.Publisher('/user_pref', user_pref)
 
 @app.route('/')
 def default():
@@ -114,7 +115,7 @@ def get_coords():
 def update_acquisition():
     global acquisition_method
     acquisition_method = request.form['acquisition']
-    publish_acquisition_transfer()
+    publish_user_prefs()
     response = flask.Response()
     response.headers["Access-Control-Allow-Origin"] = "*"
     response.data = "updated acquisition to " + acquisition_method
@@ -125,7 +126,7 @@ def update_acquisition():
 def update_transfer():
     global transfer_method
     transfer_method = request.form['transfer']
-    publish_acquisition_transfer()
+    publish_user_prefs()
     response = flask.Response()
     response.headers["Access-Control-Allow-Origin"] = "*"
     response.data = "updated acquisition to " + transfer_method
@@ -152,7 +153,7 @@ def send_emergency_stop():
 def update_transfer_id():
     global transfer_id
     transfer_id = int(request.form['transfer_id'])
-    publish_acquisition_transfer()
+    publish_user_prefs()
     response = flask.Response()
     response.headers["Access-Control-Allow-Origin"] = "*"
     response.data = "updated transfer id to " + str(transfer_id)
@@ -170,13 +171,28 @@ def send_reset():
     response = flask.Response()
     response.headers["Access-Control-Allow-Origin"] = "*"
     response.data = "successfully received reset signal"
-    return response    
+    return response
+
+# Recieve emergency stop signal from UI, send via ROS.
+@app.route('/speed', methods=['POST'])
+def update_speed():
+    global speed
+    speed = request.form['speed']
+
+    #update speed through user prefs
+    publish_user_prefs()
+
+    # https://www.kite.com/python/answers/how-to-set-response-headers-using-flask-in-python
+    response = flask.Response()
+    response.headers["Access-Control-Allow-Origin"] = "*"
+    response.data = "successfully received reset signal"
+    return response        
 
 # Bundles acquisition and transfer method together and sends them in a single ROS message.
-def publish_acquisition_transfer():
-    global acquisition_method, transfer_method, transfer_id
-    msg = acquisition_transfer(acquisition_method, transfer_method, transfer_id)
-    acquisition_transfer_pub.publish(msg)
+def publish_user_prefs():
+    global acquisition_method, transfer_method, transfer_id, speed
+    msg = user_pref(acquisition_method, transfer_method, transfer_id, speed)
+    user_pref_pub.publish(msg)
 
 # @app.route('/info')
 # def info():
